@@ -4,16 +4,22 @@ namespace PdoExtend;
 
 class Pdo extends NestedTransaction {
 
+    private $username;
+    private $password;
+    private $dsn;
+
     public function __construct($dsn, $username = null, $passwd = null,
-            $options = array()) {
+            $options = array(), $pdoStatementClass = 'PdoExtend\PdoStatement') {
         parent::__construct($dsn, $username, $passwd, $options);
+        $this->username = $username;
+        $this->password = $passwd;
+        $this->dsn = $dsn;
 
         $this->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->setAttribute(\PDO::ATTR_STATEMENT_CLASS,
-                array('PdoExtend\PdoStatement', array($this)));
+                array($pdoStatementClass, array($this)));
     }
 
-    
     public function query($statement) {
         try {
             return parent::query($statement);
@@ -21,7 +27,7 @@ class Pdo extends NestedTransaction {
             throw new Exception\QueryException($statement, $e->getMessage(), $e->getCode(), $e);
         }
     }
-    
+
     public function exec($statement) {
         try {
             return parent::exec($statement);
@@ -29,4 +35,24 @@ class Pdo extends NestedTransaction {
             throw new Exception\QueryException($statement, $e->getMessage(), $e->getCode(), $e);
         }
     }
+
+    public function getUsername() {
+        return $this->username;
+    }
+
+    public function getPassword() {
+        return $this->password;
+    }
+
+    public function getDsn() {
+        return $this->dsn;
+    }
+
+    public function getDatabaseName() {
+        $matches = array();
+        \preg_match('%dbname=([\w\\\]+)%', $this->getDsn(), $matches);
+
+        return $matches[1];
+    }
+
 }

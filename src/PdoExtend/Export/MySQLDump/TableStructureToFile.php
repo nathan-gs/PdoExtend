@@ -1,8 +1,8 @@
 <?php
 
-namespace PdoExtend\Export\Table\MySQLDump;
+namespace PdoExtend\Export\MySQLDump;
 
-class StructureToFile {
+class TableStructureToFile {
     private $database;
     private $username;
     private $password;

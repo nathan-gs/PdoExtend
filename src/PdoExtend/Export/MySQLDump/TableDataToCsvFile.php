@@ -1,10 +1,10 @@
 <?php
 
-namespace PdoExtend\Export\Table\MySQLDump;
+namespace PdoExtend\Export\MySQLDump;
 
 use PdoExtend\Structure\TableInterface;
 
-class DataToCsvFile {
+class TableDataToCsvFile {
     private $database;
     private $username;
     private $password;
