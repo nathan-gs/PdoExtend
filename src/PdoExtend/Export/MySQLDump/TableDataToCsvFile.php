@@ -34,8 +34,8 @@ class TableDataToCsvFile implements ExportTableToFileInterface {
         }
         exec('mysqldump -u' . $this->username . ' -p' . quotemeta($this->password) . ' ' . $this->database . ' ' . $table . ' --fields-terminated-by=\\\0 --no-create-info --tab ' . $this->tmpDir);
         exec('mv ' . $this->tmpDir . '/' . $table . '.txt ' . $toDirectory . '/' . $baseFileName . '.csv');
-        file_put_contents($baseFileName . '.sql',
-                $this->getCsvLoad($toDirectory . '/' . $baseFileName . '.csv', $table,
+        file_put_contents($toDirectory . '/' . $baseFileName . '.sql',
+                $this->getCsvLoad($baseFileName . '.csv', $table,
                         array_keys(iterator_to_array($table, true))));
     }
 
