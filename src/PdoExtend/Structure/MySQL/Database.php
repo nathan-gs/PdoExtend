@@ -7,14 +7,20 @@ use PdoExtend\Structure;
 class Database implements Structure\DatabaseInterface {
 
     private $connection;
+    private $name;
 
     /**
      * @var \Iterator
      */
     private $tables;
 
-    public function __construct(\PDO $connection) {
+    public function __construct(\PDO $connection, $name = null) {
         $this->connection = $connection;
+        
+        if($name === null) {
+            $name = $this->connection->getDatabaseName();
+        }
+        $this->name = $name;
 
         $sql = 'SHOW TABLES;';
         $statement = $this->connection->query($sql);
@@ -30,7 +36,7 @@ class Database implements Structure\DatabaseInterface {
     }
 
     public function key() {
-        return $this->tables->key();
+        return $this->tables->current();
     }
 
     public function next() {
@@ -47,6 +53,10 @@ class Database implements Structure\DatabaseInterface {
 
     public function hasTable($table) {
         return isset($this->tables[$table]);
+    }
+    
+    public function getName() {
+        return $this->name;
     }
 
 }

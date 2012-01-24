@@ -9,4 +9,6 @@ namespace PdoExtend\Structure;
 interface DatabaseInterface extends \Iterator {
 
     public function hasTable($table);
+    
+    public function getName();
 }

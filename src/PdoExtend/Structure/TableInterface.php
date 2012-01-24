@@ -12,4 +12,6 @@ interface TableInterface extends \Iterator {
     
     public function __toString();
     
+    public function getName();
+    
 }
