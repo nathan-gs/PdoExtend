@@ -16,8 +16,8 @@ class Database implements Structure\DatabaseInterface {
 
     public function __construct(\PDO $connection, $name = null) {
         $this->connection = $connection;
-        
-        if($name === null) {
+
+        if ($name === null) {
             $name = $this->connection->getDatabaseName();
         }
         $this->name = $name;
@@ -25,7 +25,10 @@ class Database implements Structure\DatabaseInterface {
         $sql = 'SHOW TABLES;';
         $statement = $this->connection->query($sql);
 
-        $this->tables = new \ArrayIterator(\array_values($statement->fetchAll(\PDO::FETCH_ASSOC)));
+        $this->tables = new \ArrayIterator(\array_map(
+                                function ($input) {
+                                    return reset($input);
+                                }, $statement->fetchAll(\PDO::FETCH_ASSOC)));
     }
 
     /**
@@ -54,7 +57,7 @@ class Database implements Structure\DatabaseInterface {
     public function hasTable($table) {
         return isset($this->tables[$table]);
     }
-    
+
     public function getName() {
         return $this->name;
     }

@@ -18,11 +18,14 @@ class Table implements Structure\TableInterface {
         $this->connection = $connection;
         $this->tableName = $tableName;
 
-        $sql = 'DESCRIBE '.$this->getName().';';
+        $sql = 'DESCRIBE ' . $this->getName() . ';';
         $statement = $this->connection->query($sql);
-        $this->columns = new \ArrayIterator(\array_values($statement->fetchAll(\PDO::FETCH_ASSOC)));
+        $this->columns = new \ArrayIterator(\array_map(
+                                function ($input) {
+                                    return reset($input);
+                                }, $statement->fetchAll(\PDO::FETCH_ASSOC)));
     }
-    
+
     public function getName() {
         return $this->tableName;
     }
@@ -57,4 +60,5 @@ class Table implements Structure\TableInterface {
     public function __toString() {
         return $this->getName();
     }
+
 }
