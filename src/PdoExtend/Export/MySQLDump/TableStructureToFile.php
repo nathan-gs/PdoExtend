@@ -2,7 +2,10 @@
 
 namespace PdoExtend\Export\MySQLDump;
 
-class TableStructureToFile {
+use PdoExtend\Export\ExportTableToFileInterface;
+use PdoExtend\Structure\TableInterface;
+
+class TableStructureToFile implements ExportTableToFileInterface {
     private $database;
     private $username;
     private $password;
@@ -15,8 +18,11 @@ class TableStructureToFile {
         $this->mysqlDumpPath = $mysqlDumpPath;
     }
 
-    public function export($table, $file) {
-        exec($this->mysqlDumpPath.'mysqldump -u' . $this->username . ' -p' . quotemeta($this->password) . ' ' . $this->database . ' ' . $table . ' --no-data --create-options --disable-keys --lock-tables --skip-add-drop-table --skip-comments  > "' . $filename . '"');
+    public function export(TableInterface $table, $toDirectory, $baseFileName = null) {
+        if($baseFileName === null) {
+            $baseFileName = $table->getName().'-structure.sql';
+        }
+        exec($this->mysqlDumpPath.'mysqldump -u' . $this->username . ' -p' . quotemeta($this->password) . ' ' . $this->database . ' ' . $table . ' --no-data --create-options --disable-keys --lock-tables --skip-add-drop-table --skip-comments  > "' . $toDirectory . '/' . $baseFileName . '"');
     }
 
 }

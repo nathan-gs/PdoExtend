@@ -3,8 +3,9 @@
 namespace PdoExtend\Export\MySQLDump;
 
 use PdoExtend\Structure\TableInterface;
+use PdoExtend\Export\ExportTableToFileInterface;
 
-class TableDataToCsvFile {
+class TableDataToCsvFile implements ExportTableToFileInterface {
     private $database;
     private $username;
     private $password;
@@ -23,15 +24,18 @@ class TableDataToCsvFile {
         }
     }
 
-    public function export(TableInterface $table, $baseFilename) {
+    public function export(TableInterface $table, $toDirectory, $baseFileName = null) {
+        if ($baseFileName === null) {
+            $baseFileName = $table->getName().'-data';
+        }
         if (!is_dir($this->tmpDir)) {
             mkdir($this->tmpDir, 0777, true);
             chmod($this->tmpDir, 0777);
         }
         exec('mysqldump -u' . $this->username . ' -p' . quotemeta($this->password) . ' ' . $this->database . ' ' . $table . ' --fields-terminated-by=\\\0 --no-create-info --tab ' . $this->tmpDir);
-        exec('mv ' . $this->tmpDir . '/' . $table . '.txt ' . $baseFilename . '-data.csv');
-        file_put_contents($baseFilename . '-data.sql',
-                $this->getCsvLoad($table . '-data.csv', $table,
+        exec('mv ' . $this->tmpDir . '/' . $table . '.txt ' . $toDirectory . '/' . $baseFilename . '.csv');
+        file_put_contents($baseFilename . '.sql',
+                $this->getCsvLoad($toDirectory . '/' . $baseFileName . '.csv', $table,
                         array_keys($table)));
     }
 

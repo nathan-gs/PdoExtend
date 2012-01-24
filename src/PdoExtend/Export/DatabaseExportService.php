@@ -4,31 +4,39 @@ namespace PdoExtend\Export;
 
 use PdoExtend;
 use PdoExtend\Structure\MySQL\Database;
+use PdoExtend\Structure\DatabaseInterface;
 
 class DatabaseExportService {
 
     private $connection;
+    private $dumpers = array();
+    private $database;
 
-    public function __construct(PdoExtend\Pdo $connection) {
+    public function __construct(PdoExtend\Pdo $connection, DatabaseInterface $database, array $dumpers) {
         $this->connection = $connection;
+        $this->database = $database;
+        foreach ($dumpers as $dump) {
+            $this->addTableDumper($dump);
+        }
+    }
+    
+    public function addTableDumper(ExportTableToFileInterface $dump) {
+        $this->dumpers[] = $dump;
     }
 
     public function export($toDirectory) {
         $databaseName = $this->connection->getDatabaseName();
 
-        $database = new Database($this->connection);
-        $tableCsvDump = new MySQLDump\TableDataToCsvFile($this->connection->getUsername(), $this->connection->getPassword(), $this->connection->getDatabaseName());
-        $tableStructureDump = new MySQLDump\TableStructureToFile($this->connection->getUsername(), $this->connection->getPassword(), $this->connection->getDatabaseName());
-
         $this->destinationDirectoryDeleteTables($toDirectory);
         
-        foreach ($database->getTables() as $tableName => $table) {
+        foreach ($this->database as $tableName => $table) {
             $tableDir = $toDirectory . '/' . $databaseName . '/' . $tableName;
             if (!is_dir($tableDir)) {
                 mkdir($tableDir, 0755, true);
             }
-            $tableStructureDump->export($tableName, $tableDir.'/'.$tableName.'-structure.sql');
-            $tableCsvDump->export($table, $tableDir.'/'.$tableName);
+            foreach ($this->dumpers as $dumper) {
+                $dumper->export($table, $tableDir);
+            }
         }
     }
     
