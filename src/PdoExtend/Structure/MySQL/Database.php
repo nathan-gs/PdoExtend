@@ -55,7 +55,7 @@ class Database implements Structure\DatabaseInterface {
     }
 
     public function hasTable($table) {
-        return isset($this->tables[$table]);
+        return array_search($table, $this->tables) ? true : false;
     }
 
     public function getName() {
