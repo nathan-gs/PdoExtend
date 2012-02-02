@@ -54,7 +54,7 @@ class Table implements Structure\TableInterface {
     }
 
     public function hasColumn($columnName) {
-        return array_search($columnName, $this->columns) ? true : false;
+        return array_search($columnName, iterator_to_array($this->columns)) ? true : false;
     }
 
     public function __toString() {
