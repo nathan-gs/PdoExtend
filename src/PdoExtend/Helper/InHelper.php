@@ -15,18 +15,18 @@ class InHelper {
             throw new RangeException();
         }
         $this->baseName = $baseName;
-        $this->fields = $fields;
+        $this->fields = array_values($fields);
         $this->type = $type;
     }
 
     public function getFields() {
         $count = count($this->fields);
         $sql = ' (';
-        for ($i = 0;
-                $i < $count;
-                $i++) {
+        for ($i = ($count - 1);
+                $i >= 0;
+                $i--) {
             $sql .= ':' . $this->baseName . $i;
-            if($i +1 < $count) {
+            if($i > 0) {
                 $sql .= ', ';
             }
         }
