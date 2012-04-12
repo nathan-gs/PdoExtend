@@ -27,11 +27,8 @@
        yui="true" highlight="true"
        lowUpperBound="35" highLowerBound="70"/>
         <log type="coverage-clover" target="./build/coverage/coverage.xml"/>
-        <log type="json" target="./build/logs/output/logfile.json"/>
-        <log type="tap" target="./build/logs/output/logfile.tap"/>
         <log type="junit" target="./build/xunit.xml" logIncompleteSkipped="false"/>
         <log type="testdox-html" target="./build/logs/output/testdox.html"/>
-        <log type="testdox-text" target="./build/logs/output/testdox.txt"/>
     </logging>
     <filter>
         <whitelist>
